@@ -1,0 +1,74 @@
+<div class="container-fluid m-2">
+  <h1 class="text-center">Cadastro de Livros</h1>
+  <form [formGroup]="livroForm">
+
+    <div class="form-group">
+      <label for="nome">Título do Livro</label>
+      <input type="text" required class="form-control" id="nome" formControlName="nome" placeholder="Insira o título do livro">
+    </div>
+
+    <div class="form-group">
+      <label for="autor">Autor</label>
+      <select required class="form-control" id="autor" formControlName="autor" >
+        <option *ngFor="let autor of autores" value={{autor._id}}>
+          {{ autor.nome }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="editora">Editora</label>
+      <input type="text" class="form-control" id="editora" formControlName="editora" placeholder="Editora do Livro">
+    </div>
+
+    <div class="form-group">
+      <label for="ano">Ano</label>
+      <input type="number" class="form-control" id="ano" formControlName="ano" placeholder="Ano de publicação" maxlength="4" min="1900" [max]="currentYear">
+    </div>
+
+  </form>
+</div>
+
+<p class="text-center">Para adicionar / editar / remover livros é necessário estar logado</p>
+
+<div class="d-flex justify-content-center">
+  <button type="button" class="btn btn-primary m-2" (click)="addLivro()" [disabled]="!livroForm.valid">Adicionar</button>
+  <button type="button" class="btn btn-primary m-2" (click)="editaLivro()">Editar</button>
+  <button type="button" class="btn btn-primary m-2" (click)="removeLivro()">Excluir</button>
+</div>
+
+<div>
+  <table mat-table [dataSource]="dataSource" class="demo-table">
+  
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+        <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)" [aria-label]="checkboxLabel(row)">
+        </mat-checkbox>
+      </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="nome">
+      <th mat-header-cell *matHeaderCellDef>Livro</th>
+      <td mat-cell *matCellDef="let livro">{{livro.nome}}</td>
+    </ng-container>
+  
+    <ng-container matColumnDef="autor">
+      <th mat-header-cell *matHeaderCellDef>Autor</th>
+      <td mat-cell *matCellDef="let livro">{{livro.autor.nome}}</td>
+    </ng-container>
+  
+    <ng-container matColumnDef="ano">
+      <th mat-header-cell *matHeaderCellDef>Ano</th>
+      <td mat-cell *matCellDef="let livro">{{livro.ano}}</td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
